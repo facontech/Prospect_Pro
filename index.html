@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Seus estilos CSS permanecem os mesmos */
+        /* Todos os estilos CSS anteriores permanecem aqui */
         :root {
             --primary: #2c3e50;
             --secondary: #3498db;
@@ -514,6 +514,74 @@
             margin-right: 8px;
             color: #f39c12;
         }
+
+        .url-config {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .url-config h3 {
+            margin-bottom: 10px;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .url-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .url-toggle button {
+            padding: 8px 15px;
+            border: 1px solid var(--secondary);
+            background: white;
+            color: var(--secondary);
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .url-toggle button.active {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .url-display {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .url-display input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+        
+        .url-display button {
+            padding: 10px 15px;
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .test-info {
+            background-color: #e8f4fc;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -531,7 +599,45 @@
         </header>
         
         <div class="form-container">
+            <!-- Seção de configuração da URL do webhook -->
+            <div class="form-section url-config">
+                <h2 class="section-title"><i class="fas fa-link"></i> Configuração da URL do Webhook</h2>
+                <div class="section-help">
+                    Configure a URL do webhook do n8n para onde os dados do formulário serão enviados.
+                    <span class="tooltip">
+                        <i class="fas fa-question-circle"></i>
+                        <span class="tooltiptext">Use a URL de teste durante o desenvolvimento e a URL de produção quando estiver pronto para usar em ambiente real.</span>
+                    </span>
+                </div>
+                
+                <div class="url-toggle">
+                    <button id="testUrlBtn" class="active">URL de Teste</button>
+                    <button id="prodUrlBtn">URL de Produção</button>
+                </div>
+                
+                <div class="form-group">
+                    <label for="webhookUrl">URL do Webhook</label>
+                    <div class="url-display">
+                        <input type="text" id="webhookUrl" placeholder="Cole a URL do webhook do n8n aqui">
+                        <button id="saveUrlBtn">
+                            <i class="fas fa-save"></i> Salvar
+                        </button>
+                    </div>
+                    <div class="error-message" id="url-error">Por favor, informe uma URL válida</div>
+                </div>
+                
+                <div class="test-info" id="testInfo">
+                    <i class="fas fa-info-circle"></i> 
+                    <strong>Modo de Teste:</strong> Lembre-se de clicar em "Listen for Test Event" no nó Webhook do n8n para testar.
+                </div>
+                <div class="test-info" id="prodInfo" style="display: none;">
+                    <i class="fas fa-info-circle"></i> 
+                    <strong>Modo de Produção:</strong> Certifique-se de que o workflow está ativo no n8n para receber os dados.
+                </div>
+            </div>
+            
             <form id="searchConfigForm">
+                <!-- O restante do formulário permanece igual -->
                 <div class="form-section">
                     <h2 class="section-title"><i class="fas fa-map-marker-alt"></i> Localização</h2>
                     <div class="section-help">
@@ -615,7 +721,6 @@
                                     <div class="error-message">Preço máximo é obrigatório se o mínimo não for preenchido</div>
                                 </div>
                             </div>
-                            <!-- Botão de remover removido para o primeiro produto -->
                         </div>
                     </div>
                     
@@ -791,8 +896,105 @@
             const searchTypeContainer = document.getElementById('search-type-container');
             const selectedSearchTypeInput = document.getElementById('selected-search-type');
             
+            // Elementos para configuração da URL
+            const testUrlBtn = document.getElementById('testUrlBtn');
+            const prodUrlBtn = document.getElementById('prodUrlBtn');
+            const webhookUrlInput = document.getElementById('webhookUrl');
+            const saveUrlBtn = document.getElementById('saveUrlBtn');
+            const urlError = document.getElementById('url-error');
+            const testInfo = document.getElementById('testInfo');
+            const prodInfo = document.getElementById('prodInfo');
+            
             // Palavras-chave selecionadas
             let selectedKeywords = [];
+            
+            // URLs do webhook (salvas no localStorage)
+            let webhookUrls = {
+                test: localStorage.getItem('webhookUrl_test') || '',
+                production: localStorage.getItem('webhookUrl_production') || ''
+            };
+            
+            // Tipo de URL atual (teste ou produção)
+            let currentUrlType = 'test';
+            
+            // Inicializar a interface de URLs
+            function initUrlInterface() {
+                // Configurar URL inicial
+                webhookUrlInput.value = webhookUrls[currentUrlType];
+                
+                // Eventos para os botões de toggle
+                testUrlBtn.addEventListener('click', function() {
+                    currentUrlType = 'test';
+                    updateUrlInterface();
+                });
+                
+                prodUrlBtn.addEventListener('click', function() {
+                    currentUrlType = 'production';
+                    updateUrlInterface();
+                });
+                
+                // Evento para salvar a URL
+                saveUrlBtn.addEventListener('click', saveWebhookUrl);
+                
+                // Atualizar a interface
+                updateUrlInterface();
+            }
+            
+            // Atualizar a interface de URLs
+            function updateUrlInterface() {
+                // Atualizar botões de toggle
+                testUrlBtn.classList.toggle('active', currentUrlType === 'test');
+                prodUrlBtn.classList.toggle('active', currentUrlType === 'production');
+                
+                // Atualizar campo de URL
+                webhookUrlInput.value = webhookUrls[currentUrlType];
+                
+                // Atualizar informações de ajuda
+                testInfo.style.display = currentUrlType === 'test' ? 'block' : 'none';
+                prodInfo.style.display = currentUrlType === 'production' ? 'block' : 'none';
+            }
+            
+            // Salvar a URL do webhook
+            function saveWebhookUrl() {
+                const url = webhookUrlInput.value.trim();
+                
+                if (!isValidUrl(url)) {
+                    urlError.style.display = 'block';
+                    webhookUrlInput.style.borderColor = '#e74c3c';
+                    return;
+                }
+                
+                urlError.style.display = 'none';
+                webhookUrlInput.style.borderColor = '#e0e0e0';
+                
+                // Salvar no objeto e no localStorage
+                webhookUrls[currentUrlType] = url;
+                localStorage.setItem(`webhookUrl_${currentUrlType}`, url);
+                
+                // Feedback visual
+                const originalText = saveUrlBtn.innerHTML;
+                saveUrlBtn.innerHTML = '<i class="fas fa-check"></i> Salvo!';
+                saveUrlBtn.style.backgroundColor = '#2ecc71';
+                
+                setTimeout(() => {
+                    saveUrlBtn.innerHTML = originalText;
+                    saveUrlBtn.style.backgroundColor = '';
+                }, 2000);
+            }
+            
+            // Validar URL
+            function isValidUrl(url) {
+                if (!url) return false;
+                try {
+                    new URL(url);
+                    return true;
+                } catch (e) {
+                    return false;
+                }
+            }
+            
+            // Inicializar a interface de URLs
+            initUrlInterface();
             
             // Adicionar palavra-chave
             function addKeyword() {
@@ -977,9 +1179,22 @@
             }
             
             // Validação do formulário
-            form.addEventListener('submit', function(e) {
+            form.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 let isValid = true;
+                
+                // Validar URL do webhook
+                if (!webhookUrls[currentUrlType]) {
+                    isValid = false;
+                    urlError.style.display = 'block';
+                    webhookUrlInput.style.borderColor = '#e74c3c';
+                    
+                    // Rolar até a seção de configuração da URL
+                    document.querySelector('.url-config').scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'center'
+                    });
+                }
                 
                 // Validar estado
                 const stateValue = stateInput.value.trim();
@@ -1100,51 +1315,46 @@
                     // Adicionar palavras-chave selecionadas
                     data.selectedKeywords = selectedKeywords;
                     
-                    // URL do webhook do n8n (substitua pela sua URL)
-                    const webhookUrl = 'https://facontech.app.n8n.cloud/webhook/4bdd04a8-92c2-4579-840b-5630ec3a7953';
-                    
-                    // Enviar dados para o webhook do n8n
-                    fetch(webhookUrl, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(data),
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Erro ao enviar os dados');
+                    try {
+                        // URL do webhook do n8n
+                        const webhookUrl = webhookUrls[currentUrlType];
+                        
+                        // Enviar dados para o webhook do n8n
+                        const response = await fetch(webhookUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(data),
+                        });
+                        
+                        if (response.ok) {
+                            // Sucesso no envio
+                            successMessage.style.display = 'flex';
+                            successMessage.style.gap = '12px';
+                            form.reset();
+                            
+                            // Resetar palavras-chave
+                            keywordsList.innerHTML = '';
+                            selectedKeywords = [];
+                            selectedKeywordsInput.value = '';
+                            
+                            // Ocultar mensagem de sucesso após 5 segundos
+                            setTimeout(() => {
+                                successMessage.style.display = 'none';
+                            }, 5000);
+                        } else {
+                            throw new Error(`Erro HTTP: ${response.status}`);
                         }
-                        return response.json();
-                    })
-                    .then(result => {
-                        // Sucesso no envio
-                        successMessage.style.display = 'flex';
-                        successMessage.style.gap = '12px';
-                        form.reset();
-                        
-                        // Resetar palavras-chave
-                        keywordsList.innerHTML = '';
-                        selectedKeywords = [];
-                        selectedKeywordsInput.value = '';
-                        
+                    } catch (error) {
+                        console.error('Erro:', error);
+                        alert('Ocorreu um erro ao enviar a configuração. Verifique a URL do webhook e tente novamente.');
+                    } finally {
                         // Restaurar botão de enviar
                         submitButton.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Configuração';
                         submitButton.disabled = false;
                         submitButton.classList.add('pulse');
-                        
-                        // Ocultar mensagem de sucesso após 5 segundos
-                        setTimeout(() => {
-                            successMessage.style.display = 'none';
-                        }, 5000);
-                    })
-                    .catch(error => {
-                        console.error('Erro:', error);
-                        alert('Ocorreu um erro ao enviar a configuração. Tente novamente.');
-                        submitButton.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Configuração';
-                        submitButton.disabled = false;
-                        submitButton.classList.add('pulse');
-                    });
+                    }
                 } else {
                     // Animar os campos com erro
                     const errorFields = form.querySelectorAll('.error-message:not([style*="none"])');
