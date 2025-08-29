@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Todos os estilos CSS anteriores permanecem aqui */
         :root {
             --primary: #2c3e50;
             --secondary: #3498db;
@@ -515,78 +514,66 @@
             color: #f39c12;
         }
 
-        .url-config {
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            padding: 15px;
+        /* Estilos para a tela de login */
+        .login-container {
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .login-form {
+            background: #f9f9f9;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             margin-top: 20px;
-            border-left: 4px solid var(--secondary);
         }
         
-        .url-config h3 {
-            margin-bottom: 10px;
-            color: var(--secondary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .login-form .form-group {
+            margin-bottom: 20px;
+            text-align: left;
         }
         
-        .url-toggle {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
+        .login-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
         }
         
-        .url-toggle button {
-            padding: 8px 15px;
-            border: 1px solid var(--secondary);
-            background: white;
-            color: var(--secondary);
-            border-radius: 4px;
-            cursor: pointer;
+        .login-form input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
         }
         
-        .url-toggle button.active {
-            background: var(--secondary);
+        .login-btn {
+            background: linear-gradient(135deg, var(--secondary), #2980b9);
             color: white;
-        }
-        
-        .url-display {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-        
-        .url-display input {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-family: monospace;
-            font-size: 0.9rem;
-        }
-        
-        .url-display button {
-            padding: 10px 15px;
-            background: var(--secondary);
-            color: white;
+            padding: 14px 20px;
             border: none;
-            border-radius: 4px;
+            border-radius: 8px;
             cursor: pointer;
+            width: 100%;
+            font-size: 1rem;
+            font-weight: 600;
         }
         
-        .test-info {
-            background-color: #e8f4fc;
-            padding: 10px;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            margin-top: 10px;
+        .login-error {
+            color: var(--accent);
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .hidden {
+            display: none;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
+        <!-- Tela de Login -->
+        <div id="loginScreen" class="login-container">
             <div class="logo">
                 <i class="fas fa-falcon"></i>
                 <div class="logo-text">
@@ -594,225 +581,262 @@
                     <span class="app-name">Falcon Prospect Pro</span>
                 </div>
             </div>
-            <h1>Configuração de Busca de Prospecção</h1>
-            <p>Preencha os critérios para encontrar as melhores oportunidades</p>
-        </header>
-        
-        <div class="form-container">
-            <!-- Seção de configuração da URL do webhook -->
-            <div class="form-section url-config">
-                <h2 class="section-title"><i class="fas fa-link"></i> Configuração da URL do Webhook</h2>
-                <div class="section-help">
-                    Configure a URL do webhook do n8n para onde os dados do formulário serão enviados.
-                    <span class="tooltip">
-                        <i class="fas fa-question-circle"></i>
-                        <span class="tooltiptext">Use a URL de teste durante o desenvolvimento e a URL de produção quando estiver pronto para usar em ambiente real.</span>
-                    </span>
-                </div>
-                
-                <div class="url-toggle">
-                    <button id="testUrlBtn" class="active">URL de Teste</button>
-                    <button id="prodUrlBtn">URL de Produção</button>
-                </div>
-                
+            <h2>Autenticação Requerida</h2>
+            <p>Por favor, faça login para acessar o formulário</p>
+            
+            <div class="login-form">
                 <div class="form-group">
-                    <label for="webhookUrl">URL do Webhook</label>
-                    <div class="url-display">
-                        <input type="text" id="webhookUrl" placeholder="Cole a URL do webhook do n8n aqui">
-                        <button id="saveUrlBtn">
-                            <i class="fas fa-save"></i> Salvar
-                        </button>
-                    </div>
-                    <div class="error-message" id="url-error">Por favor, informe uma URL válida</div>
+                    <label for="username">Usuário</label>
+                    <input type="text" id="username" required placeholder="Digite seu usuário">
                 </div>
-                
-                <div class="test-info" id="testInfo">
-                    <i class="fas fa-info-circle"></i> 
-                    <strong>Modo de Teste:</strong> Lembre-se de clicar em "Listen for Test Event" no nó Webhook do n8n para testar.
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" required placeholder="Digite sua senha">
                 </div>
-                <div class="test-info" id="prodInfo" style="display: none;">
-                    <i class="fas fa-info-circle"></i> 
-                    <strong>Modo de Produção:</strong> Certifique-se de que o workflow está ativo no n8n para receber os dados.
+                <button class="login-btn" onclick="validateLogin()">Entrar</button>
+                <div id="loginError" class="login-error">
+                    <i class="fas fa-exclamation-circle"></i> Credenciais inválidas
                 </div>
             </div>
+        </div>
+        
+        <!-- Formulário Principal (inicialmente oculto) -->
+        <div id="mainForm" class="hidden">
+            <header>
+                <div class="logo">
+                    <i class="fas fa-falcon"></i>
+                    <div class="logo-text">
+                        <span class="company">Facontech</span>
+                        <span class="app-name">Falcon Prospect Pro</span>
+                    </div>
+                </div>
+                <h1>Configuração de Busca de Prospecção</h1>
+                <p>Preencha os critérios para encontrar as melhores oportunidades</p>
+            </header>
             
-            <form id="searchConfigForm">
-                <!-- O restante do formulário permanece igual -->
-                <div class="form-section">
-                    <h2 class="section-title"><i class="fas fa-map-marker-alt"></i> Localização</h2>
-                    <div class="section-help">
-                        A localização é essencial para direcionar sua busca às regiões de interesse. 
-                        <span class="tooltip">
-                            <i class="fas fa-question-circle"></i>
-                            <span class="tooltiptext">Informe o estado e cidade onde deseja prospectar lojas. Isso ajuda a filtrar resultados por proximidade geográfica.</span>
-                        </span>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="state" class="required">Estado</label>
-                        <div class="datalist-container">
-                            <input type="text" id="state" name="state" required placeholder="Digite o estado ou selecione" list="statesList" autocomplete="off">
-                            <div class="datalist-options" id="stateOptions"></div>
-                            <datalist id="statesList"></datalist>
+            <div class="form-container">
+                <form id="searchConfigForm">
+                    <div class="form-section">
+                        <h2 class="section-title"><i class="fas fa-map-marker-alt"></i> Localização</h2>
+                        <div class="section-help">
+                            A localização é essencial para direcionar sua busca às regiões de interesse. 
+                            <span class="tooltip">
+                                <i class="fas fa-question-circle"></i>
+                                <span class="tooltiptext">Informe o estado e cidade onde deseja prospectar lojas. Isso ajuda a filtrar resultados por proximidade geográfica.</span>
+                            </span>
                         </div>
-                        <div class="error-message">Por favor, selecione um estado válido do Brasil</div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="city" class="required">Cidade/Região</label>
-                        <input type="text" id="city" name="city" required placeholder="Ex: Campinas">
-                        <div class="error-message">Por favor, informe a cidade ou região</div>
-                    </div>
-                </div>
-                
-                <div class="form-section">
-                    <h2 class="section-title"><i class="fas fa-tags"></i> Marcas</h2>
-                    <div class="section-help">
-                        Informe as marcas que deseja prospectar. Você pode adicionar até 3 marcas.
-                        <span class="tooltip">
-                            <i class="fas fa-question-circle"></i>
-                            <span class="tooltiptext">As marcas ajudam a filtrar lojas que trabalham com produtos específicos, direcionando melhor sua prospecção.</span>
-                        </span>
-                    </div>
-                    
-                    <div id="brands-container">
+                        
                         <div class="form-group">
-                            <label for="brand1" class="required">Marca 1</label>
-                            <input type="text" id="brand1" name="brands[]" required placeholder="Ex: Nike">
-                            <div class="error-message">Por favor, informe pelo menos uma marca</div>
+                            <label for="state" class="required">Estado</label>
+                            <div class="datalist-container">
+                                <input type="text" id="state" name="state" required placeholder="Digite o estado ou selecione" list="statesList" autocomplete="off">
+                                <div class="datalist-options" id="stateOptions"></div>
+                                <datalist id="statesList"></datalist>
+                            </div>
+                            <div class="error-message">Por favor, selecione um estado válido do Brasil</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="city" class="required">Cidade/Região</label>
+                            <input type="text" id="city" name="city" required placeholder="Ex: Campinas">
+                            <div class="error-message">Por favor, informe a cidade ou região</div>
                         </div>
                     </div>
                     
-                    <button type="button" id="add-brand" class="btn btn-add btn-sm">
-                        <i class="fas fa-plus"></i> Adicionar outra marca
-                    </button>
-                </div>
-                
-                <div class="form-section">
-                    <h2 class="section-title"><i class="fas fa-shopping-bag"></i> Produtos e Preços</h2>
-                    <div class="section-help">
-                        Adicione produtos específicos que deseja prospectar. Pelo menos um produto é obrigatório.
-                        <span class="tooltip">
-                            <i class="fas fa-question-circle"></i>
-                            <span class="tooltiptext">Informe produtos específicos e suas faixas de preço para encontrar lojas que trabalham com itens similares. Pelo menos um preço (mínimo ou máximo) deve ser informado para cada produto.</span>
-                        </span>
-                    </div>
-                    
-                    <div id="products-container">
-                        <div class="dynamic-fields">
+                    <div class="form-section">
+                        <h2 class="section-title"><i class="fas fa-tags"></i> Marcas</h2>
+                        <div class="section-help">
+                            Informe as marcas que deseja prospectar. Você pode adicionar até 3 marcas.
+                            <span class="tooltip">
+                                <i class="fas fa-question-circle"></i>
+                                <span class="tooltiptext">As marcas ajudam a filtrar lojas que trabalham com produtos específicos, direcionando melhor sua prospecção.</span>
+                            </span>
+                        </div>
+                        
+                        <div id="brands-container">
                             <div class="form-group">
-                                <label for="productName1" class="required">Nome do Produto</label>
-                                <input type="text" id="productName1" name="products[0][name]" placeholder="Ex: Camiseta" required>
-                                <div class="error-message">Por favor, informe o nome do produto</div>
+                                <label for="brand1" class="required">Marca 1</label>
+                                <input type="text" id="brand1" name="brands[]" required placeholder="Ex: Nike">
+                                <div class="error-message">Por favor, informe pelo menos uma marca</div>
                             </div>
+                        </div>
+                        
+                        <button type="button" id="add-brand" class="btn btn-add btn-sm">
+                            <i class="fas fa-plus"></i> Adicionar outra marca
+                        </button>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h2 class="section-title"><i class="fas fa-shopping-bag"></i> Produtos e Preços</h2>
+                        <div class="section-help">
+                            Adicione produtos específicos que deseja prospectar. Pelo menos um produto é obrigatório.
+                            <span class="tooltip">
+                                <i class="fas fa-question-circle"></i>
+                                <span class="tooltiptext">Informe produtos específicos e suas faixas de preço para encontrar lojas que trabalham com itens similares. Pelo menos um preço (mínimo ou máximo) deve ser informado para cada produto.</span>
+                            </span>
+                        </div>
+                        
+                        <div id="products-container">
+                            <div class="dynamic-fields">
+                                <div class="form-group">
+                                    <label for="productName1" class="required">Nome do Produto</label>
+                                    <input type="text" id="productName1" name="products[0][name]" placeholder="Ex: Camiseta" required>
+                                    <div class="error-message">Por favor, informe o nome do produto</div>
+                                </div>
+                                <div class="field-group">
+                                    <div class="form-group">
+                                        <label for="minPrice1">Preço Mínimo (R$)</label>
+                                        <div class="price-input">
+                                            <input type="text" id="minPrice1" name="products[0][min_price]" placeholder="0,00" inputmode="numeric" class="price-field">
+                                        </div>
+                                        <div class="error-message">Preço mínimo é obrigatório se o máximo não for preenchido</div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="maxPrice1">Preço Máximo (R$)</label>
+                                        <div class="price-input">
+                                            <input type="text" id="maxPrice1" name="products[0][max_price]" placeholder="0,00" inputmode="numeric" class="price-field">
+                                        </div>
+                                        <div class="error-message">Preço máximo é obrigatório se o mínimo não for preenchido</div>
+                                    </div>
+                                </div>
+                                <!-- Botão de remover removido para o primeiro produto -->
+                            </div>
+                        </div>
+                        
+                        <button type="button" id="add-product" class="btn btn-add">
+                            <i class="fas fa-plus"></i> Adicionar produto
+                        </button>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h2 class="section-title"><i class="fas fa-store"></i> Tipo de Loja</h2>
+                        <div class="section-help">
+                            Adicione palavras-chave que definem o tipo de loja que deseja prospectar. Pelo menos uma palavra-chave é obrigatória.
+                            <span class="tooltip">
+                                <i class="fas fa-question-circle"></i>
+                                <span class="tooltiptext">Use palavras-chave específicas para descrever o nicho das lojas que você quer prospectar (ex: "moda feminina", "esportes", "luxo"). Essas palavras ajudarão a encontrar estabelecimentos alinhados com seu objetivo.</span>
+                            </span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="keywordInput" class="required">Palavras-chave</label>
                             <div class="field-group">
-                                <div class="form-group">
-                                    <label for="minPrice1">Preço Mínimo (R$)</label>
-                                    <div class="price-input">
-                                        <input type="text" id="minPrice1" name="products[0][min_price]" placeholder="0,00" inputmode="numeric" class="price-field">
-                                    </div>
-                                    <div class="error-message">Preço mínimo é obrigatório se o máximo não for preenchido</div>
+                                <input type="text" id="keywordInput" placeholder="Digite uma palavra-chave e pressione Enter">
+                                <button type="button" id="add-keyword" class="btn btn-add btn-sm">
+                                    <i class="fas fa-plus"></i> Adicionar
+                                </button>
+                            </div>
+                            <div class="error-message" id="keywords-error">Por favor, adicione pelo menos uma palavra-chave</div>
+                        </div>
+                        
+                        <div class="keywords-list" id="keywords-list">
+                            <!-- Palavras-chave serão adicionadas aqui -->
+                        </div>
+                        <input type="hidden" id="selected-keywords" name="selectedKeywords">
+                    </div>
+                    
+                    <div class="form-section">
+                        <h2 class="section-title"><i class="fas fa-cog"></i> Tipo de Pesquisa</h2>
+                        <div class="section-help">
+                            Selecione o tipo de pesquisa que deseja realizar.
+                            <span class="tooltip">
+                                <i class="fas fa-question-circle"></i>
+                                <span class="tooltiptext">A pesquisa padrão é mais rápida, enquanto a avançada pode levar até 24h para obter informações através de contato direto com las lojas.</span>
+                            </span>
+                        </div>
+                        
+                        <div class="search-type-container" id="search-type-container">
+                            <div class="search-type-item" data-type="standard">
+                                <i class="fas fa-search"></i>
+                                <h3>Pesquisa Padrão</h3>
+                                <p>Busca automatizada em redes sociais, Google, imagens, áudios e textos publicados pela loja</p>
+                                <div class="details">
+                                    <i class="fas fa-clock"></i> Resultados em minutos
                                 </div>
-                                <div class="form-group">
-                                    <label for="maxPrice1">Preço Máximo (R$)</label>
-                                    <div class="price-input">
-                                        <input type="text" id="maxPrice1" name="products[0][max_price]" placeholder="0,00" inputmode="numeric" class="price-field">
-                                    </div>
-                                    <div class="error-message">Preço máximo é obrigatório se o mínimo não for preenchido</div>
+                            </div>
+                            <div class="search-type-item" data-type="advanced">
+                                <i class="fas fa-search-plus"></i>
+                                <h3>Pesquisa Avançada</h3>
+                                <p>Além da busca padrão, nosso agente de IA entra em contato com a loja para obter informações adicionais</p>
+                                <div class="details">
+                                    <i class="fas fa-clock"></i> Pode levar até 24h
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <button type="button" id="add-product" class="btn btn-add">
-                        <i class="fas fa-plus"></i> Adicionar produto
-                    </button>
-                </div>
-                
-                <div class="form-section">
-                    <h2 class="section-title"><i class="fas fa-store"></i> Tipo de Loja</h2>
-                    <div class="section-help">
-                        Adicione palavras-chave que definem o tipo de loja que deseja prospectar. Pelo menos uma palavra-chave é obrigatória.
-                        <span class="tooltip">
-                            <i class="fas fa-question-circle"></i>
-                            <span class="tooltiptext">Use palavras-chave específicas para descrever o nicho das lojas que você quer prospectar (ex: "moda feminina", "esportes", "luxo"). Essas palavras ajudarão a encontrar estabelecimentos alinhados com seu objetivo.</span>
-                        </span>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="keywordInput" class="required">Palavras-chave</label>
-                        <div class="field-group">
-                            <input type="text" id="keywordInput" placeholder="Digite uma palavra-chave e pressione Enter">
-                            <button type="button" id="add-keyword" class="btn btn-add btn-sm">
-                                <i class="fas fa-plus"></i> Adicionar
-                            </button>
-                        </div>
-                        <div class="error-message" id="keywords-error">Por favor, adicione pelo menos uma palavra-chave</div>
-                    </div>
-                    
-                    <div class="keywords-list" id="keywords-list">
-                        <!-- Palavras-chave serão adicionadas aqui -->
-                    </div>
-                    <input type="hidden" id="selected-keywords" name="selectedKeywords">
-                </div>
-                
-                <div class="form-section">
-                    <h2 class="section-title"><i class="fas fa-cog"></i> Tipo de Pesquisa</h2>
-                    <div class="section-help">
-                        Selecione o tipo de pesquisa que deseja realizar.
-                        <span class="tooltip">
-                            <i class="fas fa-question-circle"></i>
-                            <span class="tooltiptext">A pesquisa padrão é mais rápida, enquanto a avançada pode levar até 24h para obter informações através de contato direto com as lojas.</span>
-                        </span>
-                    </div>
-                    
-                    <div class="search-type-container" id="search-type-container">
-                        <div class="search-type-item" data-type="standard">
-                            <i class="fas fa-search"></i>
-                            <h3>Pesquisa Padrão</h3>
-                            <p>Busca automatizada em redes sociais, Google, imagens, áudios e textos publicados pela loja</p>
-                            <div class="details">
-                                <i class="fas fa-clock"></i> Resultados em minutos
-                            </div>
-                        </div>
-                        <div class="search-type-item" data-type="advanced">
-                            <i class="fas fa-search-plus"></i>
-                            <h3>Pesquisa Avançada</h3>
-                            <p>Além da busca padrão, nosso agente de IA entra em contato com a loja para obter informações adicionais</p>
-                            <div class="details">
-                                <i class="fas fa-clock"></i> Pode levar até 24h
-                            </div>
+                        <input type="hidden" id="selected-search-type" name="searchType" value="standard">
+                        
+                        <div class="partial-report-note">
+                            <i class="fas fa-info-circle"></i>
+                            <strong>Relatório Parcial:</strong> Você pode solicitar um relatório parcial a qualquer momento, mesmo durante o processo de pesquisa.
                         </div>
                     </div>
-                    <input type="hidden" id="selected-search-type" name="searchType" value="standard">
                     
-                    <div class="partial-report-note">
-                        <i class="fas fa-info-circle"></i>
-                        <strong>Relatório Parcial:</strong> Você pode solicitar um relatório parcial a qualquer momento, mesmo durante o processo de pesquisa.
+                    <div class="actions">
+                        <button type="reset" class="btn btn-secondary">
+                            <i class="fas fa-redo"></i> Limpar
+                        </button>
+                        <button type="submit" class="btn btn-primary pulse">
+                            <i class="fas fa-paper-plane"></i> Enviar Configuração
+                        </button>
                     </div>
-                </div>
-                
-                <div class="actions">
-                    <button type="reset" class="btn btn-secondary">
-                        <i class="fas fa-redo"></i> Limpar
-                    </button>
-                    <button type="submit" class="btn btn-primary pulse">
-                        <i class="fas fa-paper-plane"></i> Enviar Configuração
-                    </button>
-                </div>
-                
-                <div id="successMessage" class="success-message">
-                    <i class="fas fa-check-circle"></i> 
-                    <div>
-                        <h3>Configuração enviada com sucesso!</h3>
-                        <p>Estamos processando sua solicitação de prospecção.</p>
+                    
+                    <div id="successMessage" class="success-message">
+                        <i class="fas fa-check-circle"></i> 
+                        <div>
+                            <h3>Configuração enviada com sucesso!</h3>
+                            <p>Estamos processando sua solicitação de prospecção.</p>
+                        </div>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 
     <script>
+        // URL do webhook do n8n (substitua com sua URL real)
+        const N8N_WEBHOOK_URL = 'https://facontech.app.n8n.cloud/webhook-test/falcon_prospect_pro';
+        let credentials = { username: '', password: '' };
+        
+        // Função para validar o login
+        async function validateLogin() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const loginError = document.getElementById('loginError');
+            
+            if (!username || !password) {
+                loginError.textContent = 'Por favor, preencha todos os campos';
+                loginError.style.display = 'block';
+                return;
+            }
+            
+            try {
+                // Tentativa de autenticação básica
+                const response = await fetch(N8N_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Basic ' + btoa(username + ':' + password),
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ action: 'validateAuth' })
+                });
+                
+                if (response.status === 200) {
+                    // Login bem-sucedido
+                    credentials = { username, password };
+                    document.getElementById('loginScreen').classList.add('hidden');
+                    document.getElementById('mainForm').classList.remove('hidden');
+                } else {
+                    // Login falhou
+                    loginError.textContent = 'Credenciais inválidas';
+                    loginError.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Erro de autenticação:', error);
+                loginError.textContent = 'Erro de conexão. Tente novamente.';
+                loginError.style.display = 'block';
+            }
+        }
+        
         document.addEventListener('DOMContentLoaded', function() {
             // Estados do Brasil
             const estados = [
@@ -896,105 +920,8 @@
             const searchTypeContainer = document.getElementById('search-type-container');
             const selectedSearchTypeInput = document.getElementById('selected-search-type');
             
-            // Elementos para configuração da URL
-            const testUrlBtn = document.getElementById('testUrlBtn');
-            const prodUrlBtn = document.getElementById('prodUrlBtn');
-            const webhookUrlInput = document.getElementById('webhookUrl');
-            const saveUrlBtn = document.getElementById('saveUrlBtn');
-            const urlError = document.getElementById('url-error');
-            const testInfo = document.getElementById('testInfo');
-            const prodInfo = document.getElementById('prodInfo');
-            
             // Palavras-chave selecionadas
             let selectedKeywords = [];
-            
-            // URLs do webhook (salvas no localStorage)
-            let webhookUrls = {
-                test: localStorage.getItem('webhookUrl_test') || '',
-                production: localStorage.getItem('webhookUrl_production') || ''
-            };
-            
-            // Tipo de URL atual (teste ou produção)
-            let currentUrlType = 'test';
-            
-            // Inicializar a interface de URLs
-            function initUrlInterface() {
-                // Configurar URL inicial
-                webhookUrlInput.value = webhookUrls[currentUrlType];
-                
-                // Eventos para os botões de toggle
-                testUrlBtn.addEventListener('click', function() {
-                    currentUrlType = 'test';
-                    updateUrlInterface();
-                });
-                
-                prodUrlBtn.addEventListener('click', function() {
-                    currentUrlType = 'production';
-                    updateUrlInterface();
-                });
-                
-                // Evento para salvar a URL
-                saveUrlBtn.addEventListener('click', saveWebhookUrl);
-                
-                // Atualizar a interface
-                updateUrlInterface();
-            }
-            
-            // Atualizar a interface de URLs
-            function updateUrlInterface() {
-                // Atualizar botões de toggle
-                testUrlBtn.classList.toggle('active', currentUrlType === 'test');
-                prodUrlBtn.classList.toggle('active', currentUrlType === 'production');
-                
-                // Atualizar campo de URL
-                webhookUrlInput.value = webhookUrls[currentUrlType];
-                
-                // Atualizar informações de ajuda
-                testInfo.style.display = currentUrlType === 'test' ? 'block' : 'none';
-                prodInfo.style.display = currentUrlType === 'production' ? 'block' : 'none';
-            }
-            
-            // Salvar a URL do webhook
-            function saveWebhookUrl() {
-                const url = webhookUrlInput.value.trim();
-                
-                if (!isValidUrl(url)) {
-                    urlError.style.display = 'block';
-                    webhookUrlInput.style.borderColor = '#e74c3c';
-                    return;
-                }
-                
-                urlError.style.display = 'none';
-                webhookUrlInput.style.borderColor = '#e0e0e0';
-                
-                // Salvar no objeto e no localStorage
-                webhookUrls[currentUrlType] = url;
-                localStorage.setItem(`webhookUrl_${currentUrlType}`, url);
-                
-                // Feedback visual
-                const originalText = saveUrlBtn.innerHTML;
-                saveUrlBtn.innerHTML = '<i class="fas fa-check"></i> Salvo!';
-                saveUrlBtn.style.backgroundColor = '#2ecc71';
-                
-                setTimeout(() => {
-                    saveUrlBtn.innerHTML = originalText;
-                    saveUrlBtn.style.backgroundColor = '';
-                }, 2000);
-            }
-            
-            // Validar URL
-            function isValidUrl(url) {
-                if (!url) return false;
-                try {
-                    new URL(url);
-                    return true;
-                } catch (e) {
-                    return false;
-                }
-            }
-            
-            // Inicializar a interface de URLs
-            initUrlInterface();
             
             // Adicionar palavra-chave
             function addKeyword() {
@@ -1183,19 +1110,6 @@
                 e.preventDefault();
                 let isValid = true;
                 
-                // Validar URL do webhook
-                if (!webhookUrls[currentUrlType]) {
-                    isValid = false;
-                    urlError.style.display = 'block';
-                    webhookUrlInput.style.borderColor = '#e74c3c';
-                    
-                    // Rolar até a seção de configuração da URL
-                    document.querySelector('.url-config').scrollIntoView({ 
-                        behavior: 'smooth', 
-                        block: 'center'
-                    });
-                }
-                
                 // Validar estado
                 const stateValue = stateInput.value.trim();
                 if (!stateValue || !estados.includes(stateValue)) {
@@ -1218,24 +1132,26 @@
                     document.getElementById('city').nextElementSibling.style.display = 'none';
                 }
                 
-                // Validar marcas
+                // Validar marcas - CORREÇÃO: verificar se pelo menos uma marca foi preenchida
                 const brandInputs = form.querySelectorAll('input[name="brands[]"]');
-                let hasBrand = false;
-                brandInputs.forEach(input => {
-                    if (input.value.trim()) {
-                        hasBrand = true;
+                const filledBrands = Array.from(brandInputs).filter(input => input.value.trim() !== '');
+                
+                if (filledBrands.length === 0) {
+                    isValid = false;
+                    // Mostrar erro no primeiro campo de marca
+                    brandInputs[0].style.borderColor = '#e74c3c';
+                    if (brandInputs[0].nextElementSibling && brandInputs[0].nextElementSibling.classList.contains('error-message')) {
+                        brandInputs[0].nextElementSibling.style.display = 'block';
+                    }
+                } else {
+                    // Limpar erros de todos os campos de marca
+                    brandInputs.forEach(input => {
                         input.style.borderColor = '#e0e0e0';
                         if (input.nextElementSibling && input.nextElementSibling.classList.contains('error-message')) {
                             input.nextElementSibling.style.display = 'none';
                         }
-                    } else {
-                        isValid = false;
-                        input.style.borderColor = '#e74c3c';
-                        if (input.nextElementSibling && input.nextElementSibling.classList.contains('error-message')) {
-                            input.nextElementSibling.style.display = 'block';
-                        }
-                    }
-                });
+                    });
+                }
                 
                 // Validar produtos
                 const productNames = form.querySelectorAll('input[name^="products"][name$="[name]"]');
@@ -1308,30 +1224,80 @@
                     submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
                     submitButton.disabled = true;
                     
-                    // Coletar dados do formulário
-                    const formData = new FormData(form);
-                    const data = Object.fromEntries(formData.entries());
-                    
-                    // Adicionar palavras-chave selecionadas
-                    data.selectedKeywords = selectedKeywords;
-                    
                     try {
-                        // URL do webhook do n8n
-                        const webhookUrl = webhookUrls[currentUrlType];
+                        // Coletar dados do formulário de forma correta para múltiplas marcas
+                        const formData = new FormData(form);
+                        const data = {};
                         
-                        // Enviar dados para o webhook do n8n
-                        const response = await fetch(webhookUrl, {
+                        // Processar campos que podem ter múltiplos valores (como marcas)
+                        for (let [key, value] of formData.entries()) {
+                            // Se o campo já existe e é um array, adicionar o valor
+                            if (data[key] && Array.isArray(data[key])) {
+                                data[key].push(value);
+                            } 
+                            // Se o campo termina com '[]', criar um array
+                            else if (key.endsWith('[]')) {
+                                const newKey = key.slice(0, -2); // Remover '[]' do nome
+                                data[newKey] = data[newKey] || [];
+                                data[newKey].push(value);
+                            } 
+                            // Campos normais
+                            else {
+                                data[key] = value;
+                            }
+                        }
+                        
+                        // Processar produtos manualmente para garantir a estrutura correta
+                        const products = [];
+                        const productIndices = new Set();
+                        
+                        // Coletar todos os índices de produtos
+                        for (let key of formData.keys()) {
+                            if (key.startsWith('products[')) {
+                                const match = key.match(/products\[(\d+)\]\[(\w+)\]/);
+                                if (match) {
+                                    productIndices.add(match[1]);
+                                }
+                            }
+                        }
+                        
+                        // Construir array de produtos
+                        productIndices.forEach(index => {
+                            const name = formData.get(`products[${index}][name]`);
+                            const min_price = formData.get(`products[${index}][min_price]`);
+                            const max_price = formData.get(`products[${index}][max_price]`);
+                            
+                            // Só adicionar o produto se o nome foi preenchido
+                            if (name && name.trim() !== '') {
+                                products.push({
+                                    name: name,
+                                    min_price: min_price || '',
+                                    max_price: max_price || ''
+                                });
+                            }
+                        });
+                        
+                        data.products = products;
+                        
+                        // Adicionar palavras-chave selecionadas
+                        data.selectedKeywords = selectedKeywords;
+                        
+                        // Log para debug (remova em produção)
+                        console.log('Dados do formulário:', data);
+                        
+                        // Enviar para o n8n com autenticação
+                        const response = await fetch(N8N_WEBHOOK_URL, {
                             method: 'POST',
                             headers: {
-                                'Content-Type': 'application/json',
+                                'Authorization': 'Basic ' + btoa(credentials.username + ':' + credentials.password),
+                                'Content-Type': 'application/json'
                             },
-                            body: JSON.stringify(data),
+                            body: JSON.stringify(data)
                         });
                         
                         if (response.ok) {
-                            // Sucesso no envio
+                            // Exibir mensagem de sucesso
                             successMessage.style.display = 'flex';
-                            successMessage.style.gap = '12px';
                             form.reset();
                             
                             // Resetar palavras-chave
@@ -1339,18 +1305,24 @@
                             selectedKeywords = [];
                             selectedKeywordsInput.value = '';
                             
+                            // Restaurar botão de enviar
+                            submitButton.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Configuração';
+                            submitButton.disabled = false;
+                            submitButton.classList.add('pulse');
+                            
                             // Ocultar mensagem de sucesso após 5 segundos
                             setTimeout(() => {
                                 successMessage.style.display = 'none';
                             }, 5000);
                         } else {
-                            throw new Error(`Erro HTTP: ${response.status}`);
+                            alert('Erro ao enviar formulário. Status: ' + response.status);
+                            submitButton.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Configuração';
+                            submitButton.disabled = false;
+                            submitButton.classList.add('pulse');
                         }
                     } catch (error) {
                         console.error('Erro:', error);
-                        alert('Ocorreu um erro ao enviar a configuração. Verifique a URL do webhook e tente novamente.');
-                    } finally {
-                        // Restaurar botão de enviar
+                        alert('Erro ao enviar formulário.');
                         submitButton.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Configuração';
                         submitButton.disabled = false;
                         submitButton.classList.add('pulse');
